@@ -16,12 +16,9 @@ import java.util.Set;
 @Builder
 @Log4j2
 public class UserDto {
-    private Long id;
     private String firstName;
     private String lastName;
     private String username;
     private String mail;
     private String password;
-    private RoleDto roleDto;
-    private Set<ToDoListDto> toDoListDto;
 }
