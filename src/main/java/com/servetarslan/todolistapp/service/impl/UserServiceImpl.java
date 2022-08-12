@@ -1,16 +1,18 @@
 package com.servetarslan.todolistapp.service.impl;
 
+import com.servetarslan.todolistapp.dto.UserCreateOrUpdateDto;
 import com.servetarslan.todolistapp.dto.UserDto;
 import com.servetarslan.todolistapp.exception.ResourceNotFoundException;
 import com.servetarslan.todolistapp.model.User;
 import com.servetarslan.todolistapp.repository.UserRepository;
+import com.servetarslan.todolistapp.service.RoleService;
 import com.servetarslan.todolistapp.service.UserService;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
@@ -22,9 +24,12 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private RoleService roleService;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public List<UserDto> getAllUsers() {
@@ -38,12 +43,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto createUser(@RequestBody UserDto userDto) {
-        User user = DtoToEntity(userDto);
-//        user.setRole();
-//        user.setPassword(BCrypt...);
+    public UserCreateOrUpdateDto createUser(@RequestBody UserCreateOrUpdateDto userCreateDto) {
+        User user = DtoToEntity(userCreateDto);
+        user.setRole(roleService.getBasicRole());
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return userDto;
+        return userCreateDto;
     }
 
     @SneakyThrows
@@ -57,8 +62,8 @@ public class UserServiceImpl implements UserService {
 
     @SneakyThrows
     @Override
-    public ResponseEntity<UserDto> updateUser(Long id, UserDto userDto) {
-        User userEntity = DtoToEntity(userDto);
+    public ResponseEntity<UserCreateOrUpdateDto> updateUser(Long id, UserCreateOrUpdateDto userCreateDto) {
+        User userEntity = DtoToEntity(userCreateDto);
 
         User user = userRepository.findById(id)
                         .orElseThrow(() -> new ResourceNotFoundException("User " + id + " does not found!"));
@@ -67,11 +72,11 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userEntity.getLastName());
         user.setUsername(userEntity.getUsername());
         user.setMail(userEntity.getMail());
-        user.setPassword(userEntity.getPassword());
+        user.setPassword(bCryptPasswordEncoder.encode(userEntity.getPassword()));
 
         User userUpdate = userRepository.save(user);
-        UserDto responseUserDto = EntityToDto(userUpdate);
-        return ResponseEntity.ok(responseUserDto);
+        UserCreateOrUpdateDto responseUserCreateDto = EntityToUserCreateDto(userUpdate);
+        return ResponseEntity.ok(responseUserCreateDto);
     }
 
     @SneakyThrows
@@ -79,6 +84,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<Map<String, Boolean>> deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User " + id + " does not found!"));
+        user.setRole(null);
         userRepository.delete(user);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
@@ -91,8 +97,16 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(user, UserDto.class);
     }
 
+    public UserCreateOrUpdateDto EntityToUserCreateDto(User user) {
+        return modelMapper.map(user, UserCreateOrUpdateDto.class);
+    }
+
     @Override
     public User DtoToEntity(UserDto userDto) {
         return modelMapper.map(userDto, User.class);
+    }
+
+    public User DtoToEntity(UserCreateOrUpdateDto userCreateDto) {
+        return modelMapper.map(userCreateDto, User.class);
     }
 }

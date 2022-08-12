@@ -1,5 +1,6 @@
 package com.servetarslan.todolistapp.service;
 
+import com.servetarslan.todolistapp.dto.UserCreateOrUpdateDto;
 import com.servetarslan.todolistapp.dto.UserDto;
 import com.servetarslan.todolistapp.exception.ResourceNotFoundException;
 import com.servetarslan.todolistapp.model.User;
@@ -11,9 +12,9 @@ import java.util.Map;
 public interface UserService {
     // CRUD
     List<UserDto> getAllUsers();
-    UserDto createUser(UserDto userDto);
+    UserCreateOrUpdateDto createUser(UserCreateOrUpdateDto userCreateDto);
     ResponseEntity<UserDto> getUserById(Long id) throws ResourceNotFoundException;
-    ResponseEntity<UserDto> updateUser(Long id, UserDto userDto);
+    ResponseEntity<UserCreateOrUpdateDto> updateUser(Long id, UserCreateOrUpdateDto userCreateDto);
     ResponseEntity<Map<String,Boolean>> deleteUser(Long id);
 
     // Model Mapper
