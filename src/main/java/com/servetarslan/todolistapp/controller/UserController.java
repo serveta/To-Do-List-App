@@ -1,6 +1,6 @@
 package com.servetarslan.todolistapp.controller;
 
-import com.servetarslan.todolistapp.dto.UserCreateOrUpdateDto;
+import com.servetarslan.todolistapp.dto.UserCreateDto;
 import com.servetarslan.todolistapp.dto.UserDto;
 import com.servetarslan.todolistapp.service.UserService;
 import lombok.SneakyThrows;
@@ -28,7 +28,7 @@ public class UserController {
     // SAVE
     // http://localhost:8080/api/v1/users
     @PostMapping("/users")
-    public UserCreateOrUpdateDto createEmployee(@RequestBody UserCreateOrUpdateDto userCreateDto) {
+    public UserCreateDto createUser(@RequestBody UserCreateDto userCreateDto) {
         userService.createUser(userCreateDto);
         return userCreateDto;
     }
@@ -44,8 +44,8 @@ public class UserController {
     // UPDATE
     // http://localhost:8080/api/v1/users/5
     @PutMapping("users/{id}")
-    public ResponseEntity<UserCreateOrUpdateDto> updateUser(@PathVariable Long id, @RequestBody UserCreateOrUpdateDto userCreateDto) {
-        return userService.updateUser(id, userCreateDto);
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
+        return userService.updateUser(id, userDto);
     }
 
     // DELETE

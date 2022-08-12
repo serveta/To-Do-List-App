@@ -11,7 +11,7 @@ import lombok.extern.log4j.Log4j2;
 @NoArgsConstructor
 @Builder
 @Log4j2
-public class UserCreateOrUpdateDto {
+public class UserCreateDto {
     private String firstName;
     private String lastName;
     private String username;

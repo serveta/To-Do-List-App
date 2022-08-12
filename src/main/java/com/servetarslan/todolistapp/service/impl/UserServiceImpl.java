@@ -1,6 +1,6 @@
 package com.servetarslan.todolistapp.service.impl;
 
-import com.servetarslan.todolistapp.dto.UserCreateOrUpdateDto;
+import com.servetarslan.todolistapp.dto.UserCreateDto;
 import com.servetarslan.todolistapp.dto.UserDto;
 import com.servetarslan.todolistapp.exception.ResourceNotFoundException;
 import com.servetarslan.todolistapp.model.User;
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserCreateOrUpdateDto createUser(@RequestBody UserCreateOrUpdateDto userCreateDto) {
+    public UserCreateDto createUser(UserCreateDto userCreateDto) {
         User user = DtoToEntity(userCreateDto);
         user.setRole(roleService.getBasicRole());
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -62,8 +62,8 @@ public class UserServiceImpl implements UserService {
 
     @SneakyThrows
     @Override
-    public ResponseEntity<UserCreateOrUpdateDto> updateUser(Long id, UserCreateOrUpdateDto userCreateDto) {
-        User userEntity = DtoToEntity(userCreateDto);
+    public ResponseEntity<UserDto> updateUser(Long id, UserDto userDto) {
+        User userEntity = DtoToEntity(userDto);
 
         User user = userRepository.findById(id)
                         .orElseThrow(() -> new ResourceNotFoundException("User " + id + " does not found!"));
@@ -73,10 +73,11 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userEntity.getUsername());
         user.setMail(userEntity.getMail());
         user.setPassword(bCryptPasswordEncoder.encode(userEntity.getPassword()));
+        user.setRole(roleService.findOrCreate(userEntity.getRole().getName()));
 
         User userUpdate = userRepository.save(user);
-        UserCreateOrUpdateDto responseUserCreateDto = EntityToUserCreateDto(userUpdate);
-        return ResponseEntity.ok(responseUserCreateDto);
+        UserDto responseUserDto = EntityToDto(userUpdate);
+        return ResponseEntity.ok(responseUserDto);
     }
 
     @SneakyThrows
@@ -97,8 +98,8 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(user, UserDto.class);
     }
 
-    public UserCreateOrUpdateDto EntityToUserCreateDto(User user) {
-        return modelMapper.map(user, UserCreateOrUpdateDto.class);
+    public UserCreateDto EntityToUserCreateDto(User user) {
+        return modelMapper.map(user, UserCreateDto.class);
     }
 
     @Override
@@ -106,7 +107,7 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(userDto, User.class);
     }
 
-    public User DtoToEntity(UserCreateOrUpdateDto userCreateDto) {
+    public User DtoToEntity(UserCreateDto userCreateDto) {
         return modelMapper.map(userCreateDto, User.class);
     }
 }
