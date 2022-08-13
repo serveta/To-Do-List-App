@@ -25,7 +25,6 @@ public class Item extends BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date expiration;
 
-    @OneToMany
-    @JsonBackReference
-    private Set<ToDoList> toDoList;
+    @ManyToOne
+    private ToDoList toDoList;
 }

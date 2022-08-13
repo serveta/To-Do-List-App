@@ -36,7 +36,4 @@ public class User extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Role role;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<ToDoList> toDoList;
 }

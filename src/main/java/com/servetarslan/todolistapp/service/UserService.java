@@ -14,6 +14,7 @@ public interface UserService {
     List<UserDto> getAllUsers();
     UserCreateDto createUser(UserCreateDto userCreateDto);
     ResponseEntity<UserDto> getUserById(Long id) throws ResourceNotFoundException;
+    User getUserByIdReturnUser(Long id);
     ResponseEntity<UserDto> updateUser(Long id, UserDto userDto);
     ResponseEntity<Map<String,Boolean>> deleteUser(Long id);
 

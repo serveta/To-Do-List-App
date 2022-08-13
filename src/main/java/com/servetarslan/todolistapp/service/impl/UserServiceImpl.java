@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +57,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User " + id + " does not found!"));
         UserDto userDto = EntityToDto(user);
         return ResponseEntity.ok(userDto);
+    }
+
+    @SneakyThrows
+    @Override
+    public User getUserByIdReturnUser(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     @SneakyThrows
