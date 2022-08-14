@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserCreateDto createUser(UserCreateDto userCreateDto) {
         User user = DtoToEntity(userCreateDto);
-        user.setRole(roleService.getBasicRole());
+        user.setRole(roleService.getUserRole());
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return userCreateDto;

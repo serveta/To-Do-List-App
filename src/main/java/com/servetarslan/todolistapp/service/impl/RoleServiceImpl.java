@@ -24,8 +24,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role getBasicRole() {
-        String roleName = "ROLE_BASIC";
+    public Role getUserRole() {
+        String roleName = "ROLE_USER";
         Role role = roleRepository.findByName(roleName);
         if (role == null) {
             role = new Role();
@@ -36,8 +36,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role getVipRole() {
-        String roleName = "ROLE_VIP";
+    public Role getAdminRole() {
+        String roleName = "ROLE_ADMIN";
         Role role = roleRepository.findByName(roleName);
         if (role == null) {
             role = new Role();
