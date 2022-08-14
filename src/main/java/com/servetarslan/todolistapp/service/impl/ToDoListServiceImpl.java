@@ -7,7 +7,6 @@ import com.servetarslan.todolistapp.model.ToDoList;
 import com.servetarslan.todolistapp.repository.ToDoListRepository;
 import com.servetarslan.todolistapp.service.ToDoListService;
 import com.servetarslan.todolistapp.service.UserService;
-import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,16 +30,14 @@ public class ToDoListServiceImpl implements ToDoListService {
 
     @Override
     public ToDoListCreateDto createToDoList(Long userId, ToDoListCreateDto toDoListCreateDto) {
-        try {
-            if(userService.getUserById(userId) != null) {
-                ToDoList toDoList = DtoToEntity(toDoListCreateDto);
-                toDoList.setUser(userService.getUserByIdReturnUser(userId));
-                toDoListRepository.save(toDoList);
-                return toDoListCreateDto;
-            }
-        } catch (ResourceNotFoundException e) {
-            throw new RuntimeException(e);
+
+        if (userService.getUserById(userId) != null) {
+            ToDoList toDoList = DtoToEntity(toDoListCreateDto);
+            toDoList.setUser(userService.getUserByIdReturnUser(userId));
+            toDoListRepository.save(toDoList);
+            return toDoListCreateDto;
         }
+
         return null;
     }
 
@@ -55,22 +52,25 @@ public class ToDoListServiceImpl implements ToDoListService {
         return toDoListDtoList;
     }
 
-    @SneakyThrows
     @Override
     public ResponseEntity<ToDoListDto> getToDoListById(Long userId, Long toDoListId) {
         ToDoList toDoList = toDoListRepository.findByIdAndUserId(toDoListId, userId).orElseThrow(
-                ()-> new ResourceNotFoundException("To-Do List does not found!"));
+                () -> new ResourceNotFoundException("To-Do List does not found!"));
         ToDoListDto toDoListDto = EntityToDto(toDoList);
         return ResponseEntity.ok(toDoListDto);
     }
 
-    @SneakyThrows
+    @Override
+    public ToDoList getToDoListById(Long toDoListId) {
+        return toDoListRepository.findById(toDoListId).orElse(null);
+    }
+
     @Override
     public ResponseEntity<ToDoListDto> updateToDoList(Long toDoListId, Long userId, ToDoListDto toDoListDto) {
         ToDoList toDoListEntity = DtoToEntity(toDoListDto);
 
         ToDoList toDoList = toDoListRepository.findByIdAndUserId(userId, toDoListId)
-                .orElseThrow(()->new ResourceNotFoundException("To-Do List does not found!"));
+                .orElseThrow(() -> new ResourceNotFoundException("To-Do List does not found!"));
 
         toDoList.setTitle(toDoListEntity.getTitle());
 
@@ -79,11 +79,10 @@ public class ToDoListServiceImpl implements ToDoListService {
         return ResponseEntity.ok(responseToDoListDto);
     }
 
-    @SneakyThrows
     @Override
     public ResponseEntity<Map<String, Boolean>> deleteToDoList(Long toDoListId, Long userId) {
         ToDoList toDoList = toDoListRepository.findByIdAndUserId(userId, toDoListId)
-                .orElseThrow(()->new ResourceNotFoundException("To-Do List does not found!"));
+                .orElseThrow(() -> new ResourceNotFoundException("To-Do List does not found!"));
         toDoListRepository.delete(toDoList);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);

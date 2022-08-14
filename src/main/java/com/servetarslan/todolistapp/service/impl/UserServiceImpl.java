@@ -7,7 +7,6 @@ import com.servetarslan.todolistapp.model.User;
 import com.servetarslan.todolistapp.repository.UserRepository;
 import com.servetarslan.todolistapp.service.RoleService;
 import com.servetarslan.todolistapp.service.UserService;
-import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +49,6 @@ public class UserServiceImpl implements UserService {
         return userCreateDto;
     }
 
-    @SneakyThrows
     @Override
     public ResponseEntity<UserDto> getUserById(Long id) {
         User user = userRepository.findById(id)
@@ -59,13 +57,11 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(userDto);
     }
 
-    @SneakyThrows
     @Override
     public User getUserByIdReturnUser(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
-    @SneakyThrows
     @Override
     public ResponseEntity<UserDto> updateUser(Long id, UserDto userDto) {
         User userEntity = DtoToEntity(userDto);
@@ -85,7 +81,6 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(responseUserDto);
     }
 
-    @SneakyThrows
     @Override
     public ResponseEntity<Map<String, Boolean>> deleteUser(Long id) {
         User user = userRepository.findById(id)

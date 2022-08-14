@@ -35,7 +35,6 @@ public class UserController {
 
     // FIND BY ID
     // http://localhost:8080/api/v1/users/5
-    @SneakyThrows
     @GetMapping("users/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
