@@ -3,7 +3,6 @@ package com.servetarslan.todolistapp.controller;
 import com.servetarslan.todolistapp.dto.UserCreateDto;
 import com.servetarslan.todolistapp.dto.UserDto;
 import com.servetarslan.todolistapp.service.UserService;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +25,8 @@ public class UserController {
     }
 
     // SAVE
-    // http://localhost:8080/api/v1/users
-    @PostMapping("/users")
+    // http://localhost:8080/api/v1/users/register
+    @PostMapping("/users/register")
     public UserCreateDto createUser(@RequestBody UserCreateDto userCreateDto) {
         userService.createUser(userCreateDto);
         return userCreateDto;
