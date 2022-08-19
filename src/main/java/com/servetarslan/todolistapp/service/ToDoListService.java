@@ -17,6 +17,4 @@ public interface ToDoListService {
     ToDoList getToDoListById(Long toDoListId);
     ResponseEntity<ToDoListDto> updateToDoList(Long toDoListId, Long userId, ToDoListDto toDoListDto);
     ResponseEntity<Map<String,Boolean>> deleteToDoList(Long toDoListId, Long userId);
-    ToDoListDto EntityToDto(ToDoList toDoList);
-    ToDoList DtoToEntity(ToDoListDto toDoListDto);
 }

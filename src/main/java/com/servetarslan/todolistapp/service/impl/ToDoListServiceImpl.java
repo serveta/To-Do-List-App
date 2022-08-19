@@ -89,17 +89,15 @@ public class ToDoListServiceImpl implements ToDoListService {
         return ResponseEntity.ok(response);
     }
 
-    @Override
-    public ToDoListDto EntityToDto(ToDoList toDoList) {
+    private ToDoListDto EntityToDto(ToDoList toDoList) {
         return modelMapper.map(toDoList, ToDoListDto.class);
     }
 
-    @Override
-    public ToDoList DtoToEntity(ToDoListDto toDoListDto) {
+    private ToDoList DtoToEntity(ToDoListDto toDoListDto) {
         return modelMapper.map(toDoListDto, ToDoList.class);
     }
 
-    public ToDoList DtoToEntity(ToDoListCreateDto toDoListCreateDto) {
+    private ToDoList DtoToEntity(ToDoListCreateDto toDoListCreateDto) {
         return modelMapper.map(toDoListCreateDto, ToDoList.class);
     }
 }

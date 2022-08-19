@@ -17,8 +17,4 @@ public interface UserService {
     User getUserByIdReturnUser(Long id);
     ResponseEntity<UserDto> updateUser(Long id, UserDto userDto);
     ResponseEntity<Map<String,Boolean>> deleteUser(Long id);
-
-    // Model Mapper
-    UserDto EntityToDto(User user);
-    User DtoToEntity(UserDto userDto);
 }

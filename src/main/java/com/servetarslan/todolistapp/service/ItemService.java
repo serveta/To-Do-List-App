@@ -14,7 +14,4 @@ public interface ItemService {
     ResponseEntity<ItemDto> getItemById(Long userId, Long toDoListId, Long itemId);
     ResponseEntity<ItemDto> updateItem(Long itemId, Long toDoListId, Long userId, ItemDto itemDto);
     ResponseEntity<Map<String,Boolean>> deleteItem(Long itemId, Long toDoListId, Long userId);
-
-    ItemDto EntityToDto(Item item);
-    Item DtoToEntity(ItemDto itemDto);
 }

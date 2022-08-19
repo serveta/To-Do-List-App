@@ -87,17 +87,15 @@ public class ItemServiceImpl implements ItemService {
         return ResponseEntity.ok(response);
     }
 
-    @Override
-    public ItemDto EntityToDto(Item item) {
+    private ItemDto EntityToDto(Item item) {
         return modelMapper.map(item, ItemDto.class);
     }
 
-    @Override
-    public Item DtoToEntity(ItemDto itemDto) {
+    private Item DtoToEntity(ItemDto itemDto) {
         return modelMapper.map(itemDto, Item.class);
     }
 
-    public Item DtoToEntity(ItemCreateDto itemCreateDto) {
+    private Item DtoToEntity(ItemCreateDto itemCreateDto) {
         return modelMapper.map(itemCreateDto, Item.class);
     }
 }

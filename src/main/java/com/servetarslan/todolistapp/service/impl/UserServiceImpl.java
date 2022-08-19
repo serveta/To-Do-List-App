@@ -45,8 +45,8 @@ public class UserServiceImpl implements UserService {
         User user = DtoToEntity(userCreateDto);
         user.setRole(roleService.getUserRole());
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return userCreateDto;
+        User savedUser = userRepository.save(user);
+        return EntityToUserCreateDto(savedUser);
     }
 
     @Override
@@ -93,21 +93,19 @@ public class UserServiceImpl implements UserService {
     }
 
     /////////// Model Mapper
-    @Override
-    public UserDto EntityToDto(User user) {
+    private UserDto EntityToDto(User user) {
         return modelMapper.map(user, UserDto.class);
     }
 
-    public UserCreateDto EntityToUserCreateDto(User user) {
+    private UserCreateDto EntityToUserCreateDto(User user) {
         return modelMapper.map(user, UserCreateDto.class);
     }
 
-    @Override
-    public User DtoToEntity(UserDto userDto) {
+    private User DtoToEntity(UserDto userDto) {
         return modelMapper.map(userDto, User.class);
     }
 
-    public User DtoToEntity(UserCreateDto userCreateDto) {
+    private User DtoToEntity(UserCreateDto userCreateDto) {
         return modelMapper.map(userCreateDto, User.class);
     }
 }
