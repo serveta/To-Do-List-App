@@ -30,14 +30,12 @@ public class ToDoListServiceImpl implements ToDoListService {
 
     @Override
     public ToDoListCreateDto createToDoList(Long userId, ToDoListCreateDto toDoListCreateDto) {
-
         if (userService.getUserById(userId) != null) {
             ToDoList toDoList = DtoToEntity(toDoListCreateDto);
             toDoList.setUser(userService.getUserByIdReturnUser(userId));
-            toDoListRepository.save(toDoList);
-            return toDoListCreateDto;
+            ToDoList response = toDoListRepository.save(toDoList);
+            return EntityToCreateDto(response);
         }
-
         return null;
     }
 
@@ -93,6 +91,9 @@ public class ToDoListServiceImpl implements ToDoListService {
         return modelMapper.map(toDoList, ToDoListDto.class);
     }
 
+    private ToDoListCreateDto EntityToCreateDto(ToDoList toDoList) {
+        return modelMapper.map(toDoList, ToDoListCreateDto.class);
+    }
     private ToDoList DtoToEntity(ToDoListDto toDoListDto) {
         return modelMapper.map(toDoListDto, ToDoList.class);
     }
