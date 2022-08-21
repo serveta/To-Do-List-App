@@ -31,8 +31,8 @@ public class ItemServiceImpl implements ItemService {
         if (toDoListService.getToDoListById(userId, toDoListId) != null) {
             Item item = DtoToEntity(itemCreateDto);
             item.setToDoList(toDoListService.getToDoListById(toDoListId));
-            itemRepository.save(item);
-            return itemCreateDto;
+            Item result = itemRepository.save(item);
+            return EntityToCreateDto(result);
         }
         return null;
     }
@@ -89,6 +89,9 @@ public class ItemServiceImpl implements ItemService {
 
     private ItemDto EntityToDto(Item item) {
         return modelMapper.map(item, ItemDto.class);
+    }
+    private ItemCreateDto EntityToCreateDto(Item item) {
+        return modelMapper.map(item, ItemCreateDto.class);
     }
 
     private Item DtoToEntity(ItemDto itemDto) {
