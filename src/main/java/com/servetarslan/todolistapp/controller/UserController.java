@@ -17,39 +17,28 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // GET ALL (LIST)
-    // http://localhost:8080/api/v1/users
     @GetMapping("/users")
-    public List<UserDto> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // SAVE
-    // http://localhost:8080/api/v1/users/register
     @PostMapping("/users/register")
-    public UserCreateDto createUser(@RequestBody UserCreateDto userCreateDto) {
-        userService.createUser(userCreateDto);
-        return userCreateDto;
+    public ResponseEntity<UserCreateDto> createUser(@RequestBody UserCreateDto userCreateDto) {
+        return ResponseEntity.ok(userService.createUser(userCreateDto));
     }
 
-    // FIND BY ID
-    // http://localhost:8080/api/v1/users/5
     @GetMapping("users/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<UserDto> getUserDtoById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserDtoById(id));
     }
 
-    // UPDATE
-    // http://localhost:8080/api/v1/users/5
     @PutMapping("users/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
-        return userService.updateUser(id, userDto);
+        return ResponseEntity.ok(userService.updateUser(id, userDto));
     }
 
-    // DELETE
-    // http://localhost:8080/api/v1/users/1
     @DeleteMapping("users/{id}")
     public ResponseEntity<Map<String,Boolean>> deleteUser(@PathVariable Long id) {
-        return userService.deleteUser(id);
+        return ResponseEntity.ok(userService.deleteUser(id));
     }
 }

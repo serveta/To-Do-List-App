@@ -9,7 +9,6 @@ import com.servetarslan.todolistapp.service.RoleService;
 import com.servetarslan.todolistapp.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,29 +44,21 @@ public class UserServiceImpl implements UserService {
         User user = DtoToEntity(userCreateDto);
         user.setRole(roleService.getUserRole());
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        User savedUser = userRepository.save(user);
-        return EntityToUserCreateDto(savedUser);
+        User response = userRepository.save(user);
+        return EntityToUserCreateDto(response);
     }
 
     @Override
-    public ResponseEntity<UserDto> getUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User " + id + " does not found!"));
-        UserDto userDto = EntityToDto(user);
-        return ResponseEntity.ok(userDto);
+    public UserDto getUserDtoById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User " + userId + " does not found!"));
+        return EntityToDto(user);
     }
 
     @Override
-    public User getUserByIdReturnUser(Long id) {
-        return userRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public ResponseEntity<UserDto> updateUser(Long id, UserDto userDto) {
+    public UserDto updateUser(Long userId, UserDto userDto) {
+        User user = getUserById(userId);
         User userEntity = DtoToEntity(userDto);
-
-        User user = userRepository.findById(id)
-                        .orElseThrow(() -> new ResourceNotFoundException("User " + id + " does not found!"));
 
         user.setFirstName(userEntity.getFirstName());
         user.setLastName(userEntity.getLastName());
@@ -77,22 +68,23 @@ public class UserServiceImpl implements UserService {
         user.setRole(roleService.findOrCreate(userEntity.getRole().getName()));
 
         User userUpdate = userRepository.save(user);
-        UserDto responseUserDto = EntityToDto(userUpdate);
-        return ResponseEntity.ok(responseUserDto);
+        return EntityToDto(userUpdate);
     }
 
     @Override
-    public ResponseEntity<Map<String, Boolean>> deleteUser(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User " + id + " does not found!"));
+    public Map<String, Boolean> deleteUser(Long userId) {
+        User user = getUserById(userId);
         user.setRole(null);
         userRepository.delete(user);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
-        return ResponseEntity.ok(response);
+        return response;
     }
 
-    /////////// Model Mapper
+    protected User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User does not found!"));
+    }
+
     private UserDto EntityToDto(User user) {
         return modelMapper.map(user, UserDto.class);
     }

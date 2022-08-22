@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.*;
@@ -39,80 +38,91 @@ public class UserServiceImplTest {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Test
-    public void when_getAllUsers_called_should_return_userDtoList() {
-        // given
-        User user = new User("test","test","test","test","test", new Role());
+    public void when_getAllUsers_called_should_return_List_userDto() {
+        User user = new User();
+        user.setFirstName("test-f-name");
+        user.setLastName("test-l-name");
+        user.setUsername("test-username");
+        user.setMail("test-mail@test.com");
+        user.setPassword("test-pass");
+        user.setRole(new Role());
 
-        // when
         when(userRepository.findAll()).thenReturn(Collections.singletonList(user));
 
-        // then
         List<UserDto> getAllUsers = userService.getAllUsers();
 
         assertNotNull(getAllUsers);
         assertEquals(user.getUsername(),getAllUsers.get(0).getUsername());
-        verify(userRepository,times(1)).findAll();
+        verify(userRepository).findAll();
     }
 
     @Test
     public void when_createUser_called_should_return_userCreateDto() {
         UserCreateDto userCreateDto = UserCreateDto
                 .builder()
-                .firstName("test")
-                .lastName("test")
-                .username("test")
-                .mail("test")
-                .password("test")
+                .firstName("test-f-name")
+                .lastName("test-l-name")
+                .username("test-username")
+                .mail("test-mail@test.com")
+                .password("test-pass")
                 .build();
 
-        User user = new User("test","test","test","test","test", new Role());
+        User user = new User();
+        user.setFirstName("test-f-name");
+        user.setLastName("test-l-name");
+        user.setUsername("test-username");
+        user.setMail("test-mail@test.com");
+        user.setPassword("test-pass");
+        user.setRole(new Role());
 
-        when(userRepository.save(user)).thenReturn(user);
         when(roleService.getUserRole()).thenReturn(new Role());
         when(bCryptPasswordEncoder.encode(user.getPassword())).thenReturn(user.getPassword());
+        when(userRepository.save(user)).thenReturn(user);
 
         UserCreateDto result = userService.createUser(userCreateDto);
 
         assertEquals(userCreateDto.getFirstName(), result.getFirstName());
-        verify(userRepository,times(1)).save(user);
-        verify(roleService,times(1)).getUserRole();
-        verify(bCryptPasswordEncoder,times(1)).encode(anyString());
+        verify(userRepository).save(user);
+        verify(roleService).getUserRole();
+        verify(bCryptPasswordEncoder).encode(anyString());
     }
 
     @Test
-    public void when_getUserById_called_should_return_ResponseEntity_UserDto() {
+    public void when_getUserDtoById_called_should_return_UserDto() {
         Long userId = 1L;
-        User user = new User("test","test","test","test","test", new Role());
-
-        UserDto userDto = UserDto
-                .builder()
-                .firstName("test")
-                .lastName("test")
-                .username("test")
-                .mail("test")
-                .password("test")
-                .build();
+        User user = new User();
+        user.setFirstName("test-f-name");
+        user.setLastName("test-l-name");
+        user.setUsername("test-username");
+        user.setMail("test-mail@test.com");
+        user.setPassword("test-pass");
+        user.setRole(new Role());
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        ResponseEntity<UserDto> getUserById = userService.getUserById(userId);
+        UserDto response = userService.getUserDtoById(userId);
 
-        assertNotNull(getUserById);
-        assertEquals(user.getUsername(), Objects.requireNonNull(getUserById.getBody()).getUsername());
-        verify(userRepository, times(1)).findById(userId);
+        assertEquals(user.getUsername(), response.getUsername());
+        verify(userRepository).findById(userId);
     }
 
     @Test
-    public void when_getUserByIdReturnUser_called_should_return_User() {
+    public void when_getUserById_called_should_return_User() {
         Long userId = 1L;
-        User user = new User("test","test","test","test","test", new Role());
+        User user = new User();
+        user.setFirstName("test-f-name");
+        user.setLastName("test-l-name");
+        user.setUsername("test-username");
+        user.setMail("test-mail@test.com");
+        user.setPassword("test-pass");
+        user.setRole(new Role());
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        User getUserByIdReturnUser = userService.getUserByIdReturnUser(userId);
+        User response = userService.getUserById(userId);
 
-        assertEquals(user.getUsername(),getUserByIdReturnUser.getUsername());
-        verify(userRepository, times(1)).findById(userId);
+        assertEquals(user.getUsername(), response.getUsername());
+        verify(userRepository).findById(userId);
     }
 
     @Test
@@ -120,42 +130,59 @@ public class UserServiceImplTest {
         Long userId = 1L;
         UserDto userDto = UserDto
                 .builder()
-                .firstName("update-test")
-                .lastName("update-test")
-                .username("update-test")
-                .mail("update-test")
-                .password("update-test")
+                .firstName("update-firstname-test")
+                .lastName("update-lastname-test")
+                .username("update-username-test")
+                .mail("update-mail@test.com")
+                .password("update-pass-test")
                 .role(new RoleDto())
                 .build();
 
-        User userEntity = new User("update-test","update-test","update-test","update-test","update-test", new Role());
+        User userUpdate = new User();
+        userUpdate.setFirstName("update-firstname-tes");
+        userUpdate.setLastName("update-lastname-test");
+        userUpdate.setUsername("update-username-test");
+        userUpdate.setMail("update-mail@test.com");
+        userUpdate.setPassword("update-pass-test");
+        userUpdate.setRole(new Role());
 
-        User user = new User("test","test","test","test","test", new Role());
+        User user = new User();
+        user.setFirstName("test-f-name");
+        user.setLastName("test-l-name");
+        user.setUsername("test-username");
+        user.setMail("test-mail@test.com");
+        user.setPassword("test-pass");
+        user.setRole(new Role());
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(bCryptPasswordEncoder.encode(userEntity.getPassword())).thenReturn(userEntity.getPassword());
-        when(roleService.findOrCreate(userEntity.getRole().getName())).thenReturn(new Role());
-        when(userRepository.save(user)).thenReturn(userEntity);
+        when(bCryptPasswordEncoder.encode(userUpdate.getPassword())).thenReturn(userUpdate.getPassword());
+        when(roleService.findOrCreate(userUpdate.getRole().getName())).thenReturn(new Role());
+        when(userRepository.save(user)).thenReturn(userUpdate);
 
-        ResponseEntity<UserDto> updateUser = userService.updateUser(userId, userDto);
+        UserDto response = userService.updateUser(userId, userDto);
 
-        assertNotNull(updateUser);
-        assertEquals(userEntity.getUsername(), Objects.requireNonNull(updateUser.getBody()).getUsername());
-        verify(userRepository, times(1)).findById(userId);
-        verify(userRepository, times(1)).save(user);
+        assertEquals(userUpdate.getUsername(), response.getUsername());
+        verify(userRepository).findById(userId);
+        verify(userRepository).save(user);
     }
 
     @Test
-    public void when_deleteUser_called_should_return_ResponseEntity_Map_Boolean() {
+    public void when_deleteUser_called_should_return_Map() {
         Long userId = 1L;
-        User user = new User("test","test","test","test","test", new Role());
+        User user = new User();
+        user.setFirstName("test-f-name");
+        user.setLastName("test-l-name");
+        user.setUsername("test-username");
+        user.setMail("test-mail@test.com");
+        user.setPassword("test-pass");
+        user.setRole(new Role());
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        ResponseEntity<Map<String, Boolean>> deleteUser = userService.deleteUser(userId);
+        Map<String, Boolean> response = userService.deleteUser(userId);
 
-        assertNotNull(deleteUser);
-        assertEquals(deleteUser.getStatusCodeValue(), 200);
-        verify(userRepository, times(1)).delete(user);
+        assertNotNull(response);
+        assertEquals(Boolean.TRUE, response.get("deleted"));
+        verify(userRepository).delete(user);
     }
 }
