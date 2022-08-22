@@ -50,14 +50,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserDtoById(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User " + userId + " does not found!"));
+        User user = getUserByIdIfExist(userId);
         return EntityToDto(user);
     }
 
     @Override
     public UserDto updateUser(Long userId, UserDto userDto) {
-        User user = getUserById(userId);
+        User user = getUserByIdIfExist(userId);
         User userEntity = DtoToEntity(userDto);
 
         user.setFirstName(userEntity.getFirstName());
@@ -73,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, Boolean> deleteUser(Long userId) {
-        User user = getUserById(userId);
+        User user = getUserByIdIfExist(userId);
         user.setRole(null);
         userRepository.delete(user);
         Map<String, Boolean> response = new HashMap<>();
@@ -81,7 +80,7 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
-    protected User getUserById(Long userId) {
+    protected User getUserByIdIfExist(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User does not found!"));
     }
 

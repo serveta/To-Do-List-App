@@ -107,7 +107,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void when_getUserById_called_should_return_User() {
+    public void when_getUserByIdIfExist_called_should_return_User() {
         Long userId = 1L;
         User user = new User();
         user.setFirstName("test-f-name");
@@ -119,7 +119,7 @@ public class UserServiceImplTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        User response = userService.getUserById(userId);
+        User response = userService.getUserByIdIfExist(userId);
 
         assertEquals(user.getUsername(), response.getUsername());
         verify(userRepository).findById(userId);
