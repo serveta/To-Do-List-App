@@ -14,33 +14,31 @@ import java.util.Map;
 @RequestMapping("/api/v1")
 @CrossOrigin(origins = "http://localhost:3000")
 public class ItemController {
-
     @Autowired
     private ItemService itemService;
 
     @PostMapping("/users/{userId}/todolists/{toDoListId}/items")
-    public ItemCreateDto createItem(@PathVariable Long userId, @PathVariable Long toDoListId, @RequestBody ItemCreateDto itemCreateDto) {
-        itemService.createItem(userId, toDoListId, itemCreateDto);
-        return itemCreateDto;
+    public ResponseEntity<ItemCreateDto> createItem(@PathVariable Long userId, @PathVariable Long toDoListId, @RequestBody ItemCreateDto itemCreateDto) {
+        return ResponseEntity.ok(itemService.createItem(userId, toDoListId, itemCreateDto));
     }
 
     @GetMapping("/users/{userId}/todolists/{toDoListId}/items")
-    public List<ItemDto> getAllItems(@PathVariable Long userId, @PathVariable Long toDoListId) {
-        return itemService.getAllItems(userId, toDoListId);
+    public ResponseEntity<List<ItemDto>> getAllItems(@PathVariable Long userId, @PathVariable Long toDoListId) {
+        return ResponseEntity.ok(itemService.getAllItems(userId, toDoListId));
     }
 
     @GetMapping("/users/{userId}/todolists/{toDoListId}/items/{itemId}")
     public ResponseEntity<ItemDto> getItemById(@PathVariable Long userId, @PathVariable Long toDoListId, @PathVariable Long itemId) {
-        return itemService.getItemById(userId, toDoListId, itemId);
+        return ResponseEntity.ok(itemService.getItemDtoById(userId, toDoListId, itemId));
     }
 
     @PutMapping("/users/{userId}/todolists/{toDoListId}/items/{itemId}")
     public ResponseEntity<ItemDto> updateItem(@PathVariable Long userId, @PathVariable Long toDoListId, @PathVariable Long itemId, @RequestBody ItemDto itemDto) {
-        return itemService.updateItem(itemId, toDoListId, userId, itemDto);
+        return ResponseEntity.ok(itemService.updateItem(userId, toDoListId, itemId, itemDto));
     }
 
     @DeleteMapping("/users/{userId}/todolists/{toDoListId}/items/{itemId}")
     public ResponseEntity<Map<String,Boolean>> deleteItem(@PathVariable Long userId, @PathVariable Long toDoListId, @PathVariable Long itemId) {
-        return itemService.deleteItem(itemId, toDoListId, userId);
+        return ResponseEntity.ok(itemService.deleteItem(userId, toDoListId, itemId));
     }
 }
